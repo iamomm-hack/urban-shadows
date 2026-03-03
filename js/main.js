@@ -172,9 +172,17 @@ for (const [lx, lz] of lampPositions) {
   scene.add(lampLight);
 }
 
-const STATES = { USERNAME: -1, MENU: 0, PLAYING: 1, PAUSED: 2, GAME_OVER: 3 };
-let state = STATES.USERNAME;
+const STATES = {
+  DEVICE_SELECT: -2,
+  USERNAME: -1,
+  MENU: 0,
+  PLAYING: 1,
+  PAUSED: 2,
+  GAME_OVER: 3,
+};
+let state = STATES.DEVICE_SELECT;
 let playerUsername = "";
+let isMobileMode = false;
 
 const input = new InputHandler();
 let player, bulletPool, enemies;
@@ -199,6 +207,9 @@ const scoreDisplay = document.getElementById("score-display");
 const fpsCounter = document.getElementById("fps-counter");
 const damageFlash = document.getElementById("damage-flash");
 
+const deviceScreen = document.getElementById("device-screen");
+const devicePhoneBtn = document.getElementById("device-phone");
+const deviceLaptopBtn = document.getElementById("device-laptop");
 const usernameScreen = document.getElementById("username-screen");
 const usernameInput = document.getElementById("username-input");
 const usernameSubmit = document.getElementById("username-submit");
@@ -298,6 +309,7 @@ function initGame() {
 }
 
 function showScreen(screen) {
+  deviceScreen.classList.remove("active");
   usernameScreen.classList.remove("active");
   menuScreen.classList.remove("active");
   pauseScreen.classList.remove("active");
@@ -367,6 +379,7 @@ renderer.setAnimationLoop(() => {
   }
 
   switch (state) {
+    case STATES.DEVICE_SELECT:
     case STATES.USERNAME:
       // camera orbit in background but don't call tickMenu (it overrides the screen)
       camYaw += dt * 0.2;
@@ -387,6 +400,29 @@ renderer.setAnimationLoop(() => {
       tickGameOver(dt);
       break;
   }
+});
+
+// Device selection handlers
+devicePhoneBtn.addEventListener("click", () => {
+  isMobileMode = true;
+  input.enableMobileMode();
+  // Update menu text for mobile
+  const menuPrompt = document.getElementById("menu-prompt");
+  const menuControls = document.getElementById("menu-controls");
+  if (menuPrompt) menuPrompt.textContent = "Tap to Start";
+  if (menuControls)
+    menuControls.textContent =
+      "Joystick — Move  |  Swipe — Aim  |  🔥 — Shoot  |  ⬆ — Jump";
+  state = STATES.USERNAME;
+  showScreen(usernameScreen);
+  usernameInput.focus();
+});
+
+deviceLaptopBtn.addEventListener("click", () => {
+  isMobileMode = false;
+  state = STATES.USERNAME;
+  showScreen(usernameScreen);
+  usernameInput.focus();
 });
 
 // Username submit handler

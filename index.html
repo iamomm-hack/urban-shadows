@@ -40,7 +40,43 @@
         <div id="damage-flash"></div>
     </div>
 
-    <div id="username-screen" class="overlay-screen active">
+    <!-- Mobile Touch Controls (hidden by default) -->
+    <div id="touch-controls">
+        <div id="touch-joystick">
+            <div id="joystick-knob"></div>
+        </div>
+        <button id="touch-reload" class="touch-btn touch-small touch-reload-pos">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff6a33" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        </button>
+        <div id="touch-right">
+            <button id="touch-jump" class="touch-btn touch-small">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff6a33" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
+            </button>
+            <button id="touch-shoot" class="touch-btn touch-shoot">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
+            </button>
+        </div>
+        <button id="touch-pause" class="touch-btn touch-pause">⏸</button>
+        <div id="touch-camera-zone"></div>
+    </div>
+
+    <!-- Device Selection -->
+    <div id="device-screen" class="overlay-screen active">
+        <div class="danger-box">
+            <div class="danger-stripe"></div>
+            <h1 class="danger-title">⚠ URBAN SHADOWS ⚠</h1>
+            <p class="danger-subtitle">SELECT YOUR DEVICE</p>
+            <div class="device-buttons">
+                <button id="device-phone" class="danger-btn device-btn">PHONE / TABLET</button>
+                <button id="device-laptop" class="danger-btn device-btn">LAPTOP</button>
+            </div>
+            <p class="danger-warning">⚠ CHOOSE WISELY SOLDIER ⚠</p>
+            <div class="danger-stripe"></div>
+        </div>
+    </div>
+
+    <!-- Username Entry -->
+    <div id="username-screen" class="overlay-screen">
         <div class="danger-box">
             <div class="danger-stripe"></div>
             <h1 class="danger-title">⚠ URBAN SHADOWS ⚠</h1>
@@ -55,9 +91,9 @@
 
     <div id="menu-screen" class="overlay-screen">
         <h1 class="title-glow">URBAN SHADOWS</h1>
-        <p class="subtitle">3D Tactical Shooter</p>
-        <p class="prompt pulse">Click to Start</p>
-        <p class="controls-hint">WASD — Move &nbsp;|&nbsp; Mouse — Aim &nbsp;|&nbsp; Click — Shoot &nbsp;|&nbsp; Space — Jump &nbsp;|&nbsp; R — Reload &nbsp;|&nbsp; ESC — Pause</p>
+        <p class="subtitle">Tactical Shooter</p>
+        <p class="prompt pulse" id="menu-prompt">Click to Start</p>
+        <p class="controls-hint" id="menu-controls">WASD — Move &nbsp;|&nbsp; Mouse — Aim &nbsp;|&nbsp; Click — Shoot &nbsp;|&nbsp; Space — Jump &nbsp;|&nbsp; R — Reload &nbsp;|&nbsp; ESC — Pause</p>
     </div>
 
     <div id="pause-screen" class="overlay-screen">
