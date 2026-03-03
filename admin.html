@@ -168,9 +168,6 @@
         const loginSection = document.getElementById('login-section');
         const devControls = document.getElementById('dev-controls');
 
-        if (localStorage.getItem('admin_auth') === 'true') {
-            showControls();
-        }
 
         authBtn.addEventListener('click', tryAuth);
         keyInput.addEventListener('keydown', (e) => {
@@ -182,7 +179,6 @@
             if (!input) return;
 
             if (simpleHash(input) === VALID_HASH) {
-                localStorage.setItem('admin_auth', 'true');
                 statusMsg.textContent = 'access granted';
                 statusMsg.className = 'status ok';
                 setTimeout(showControls, 500);

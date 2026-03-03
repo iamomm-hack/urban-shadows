@@ -172,8 +172,9 @@ for (const [lx, lz] of lampPositions) {
   scene.add(lampLight);
 }
 
-const STATES = { MENU: 0, PLAYING: 1, PAUSED: 2, GAME_OVER: 3 };
-let state = STATES.MENU;
+const STATES = { USERNAME: -1, MENU: 0, PLAYING: 1, PAUSED: 2, GAME_OVER: 3 };
+let state = STATES.USERNAME;
+let playerUsername = "";
 
 const input = new InputHandler();
 let player, bulletPool, enemies;
@@ -198,6 +199,9 @@ const scoreDisplay = document.getElementById("score-display");
 const fpsCounter = document.getElementById("fps-counter");
 const damageFlash = document.getElementById("damage-flash");
 
+const usernameScreen = document.getElementById("username-screen");
+const usernameInput = document.getElementById("username-input");
+const usernameSubmit = document.getElementById("username-submit");
 const menuScreen = document.getElementById("menu-screen");
 const pauseScreen = document.getElementById("pause-screen");
 const gameoverScreen = document.getElementById("gameover-screen");
@@ -294,6 +298,7 @@ function initGame() {
 }
 
 function showScreen(screen) {
+  usernameScreen.classList.remove("active");
   menuScreen.classList.remove("active");
   pauseScreen.classList.remove("active");
   gameoverScreen.classList.remove("active");
@@ -362,6 +367,13 @@ renderer.setAnimationLoop(() => {
   }
 
   switch (state) {
+    case STATES.USERNAME:
+      // camera orbit in background but don't call tickMenu (it overrides the screen)
+      camYaw += dt * 0.2;
+      camera.position.set(Math.sin(camYaw) * 20, 12, Math.cos(camYaw) * 20);
+      camera.lookAt(0, 0, 0);
+      renderer.render(scene, camera);
+      break;
     case STATES.MENU:
       tickMenu(dt);
       break;
@@ -375,6 +387,28 @@ renderer.setAnimationLoop(() => {
       tickGameOver(dt);
       break;
   }
+});
+
+// Username submit handler
+function submitUsername() {
+  const name = usernameInput.value.trim();
+  if (!name) {
+    usernameInput.style.borderColor = "#ff0000";
+    usernameInput.style.animation = "shake 0.4s ease";
+    setTimeout(() => {
+      usernameInput.style.animation = "";
+    }, 400);
+    return;
+  }
+  playerUsername = name;
+  localStorage.setItem("player_username", name);
+  state = STATES.MENU;
+  showScreen(menuScreen);
+}
+
+usernameSubmit.addEventListener("click", submitUsername);
+usernameInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") submitUsername();
 });
 
 document.addEventListener("click", (e) => {
