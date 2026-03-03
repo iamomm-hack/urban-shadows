@@ -1,6 +1,6 @@
 # Urban Shadows 🔫
 
-A browser-based **3D third-person tactical shooter** built with **Three.js** and **vanilla JavaScript** — no frameworks, no build tools.
+A browser-based **tactical third-person shooter** built with **Three.js** and **vanilla JavaScript** — no frameworks, no build tools. Playable on both **desktop** and **mobile**.
 
 ![Urban Shadows](https://img.shields.io/badge/status-production--ready-brightgreen)
 
@@ -8,9 +8,9 @@ A browser-based **3D third-person tactical shooter** built with **Three.js** and
 
 ## UI
 
-
-
 ## 🎮 Game Controls
+
+### Desktop (Laptop)
 
 | Action     | Input             |
 | ---------- | ----------------- |
@@ -21,6 +21,17 @@ A browser-based **3D third-person tactical shooter** built with **Three.js** and
 | Reload     | `R`               |
 | Pause      | `ESC`             |
 | Fullscreen | Fullscreen button |
+
+### Mobile (Phone / Tablet)
+
+| Action | Input                          |
+| ------ | ------------------------------ |
+| Move   | Virtual joystick (left side)   |
+| Aim    | Swipe right side of screen     |
+| Shoot  | 🎯 Shoot button (bottom-right) |
+| Jump   | ⬆ Jump button (left of shoot)  |
+| Reload | ↻ Reload button (above stick)  |
+| Pause  | ⏸ Pause button (top-right)     |
 
 ---
 
@@ -70,8 +81,9 @@ npx -y serve .
 
 ```
 urban-shadows/
-├── index.html          # Game entry point + HUD overlay
-├── styles.css          # UI styling, overlays & animations
+├── index.html          # Game entry point + HUD + touch controls
+├── styles.css          # UI styling, overlays, touch controls & animations
+├── admin.html          # Developer admin panel
 ├── vercel.json         # Vercel deployment config
 ├── .env                # Environment variables
 ├── README.md
@@ -80,7 +92,7 @@ urban-shadows/
     ├── Player.js       # Player class (movement, shooting, health, jumping)
     ├── Enemy.js        # Enemy class (patrol/chase AI, respawn)
     ├── Bullet.js       # Bullet class + object pool
-    ├── InputHandler.js # Keyboard, mouse & pointer lock management
+    ├── InputHandler.js # Keyboard, mouse, pointer lock & touch controls
     └── utils.js        # Collision, spawn, angle helpers
 ```
 
@@ -88,25 +100,51 @@ urban-shadows/
 
 ## ✨ Features
 
-- **3D third-person camera** with smooth orbit and pitch control
+### 🎮 Gameplay
+
+- **Third-person camera** with smooth orbit and pitch control
 - **Three.js rendering** with shadows, fog, and tone mapping
 - **Light mode** environment — sky blue atmosphere with green terrain
-- **Username entry screen** — danger-themed landing page on launch
-- **Smooth 60 FPS** game loop with delta-time
 - **WASD movement** with normalised diagonals
 - **Mouse aiming** via Pointer Lock API — auto re-locks after alt-tab
 - **Magazine + reserve ammo** system with reload
+- **Jumping** with gravity physics
 - **Patrol / Chase AI** with hysteresis to prevent flickering
 - **Object-pooled bullets** — zero GC pressure
 - **Particle effects** on hit and kill
 - **Building collision** for player and enemies
 - **Health bar** with colour gradient (green → yellow → red)
+
+### 📱 Mobile Support
+
+- **Device selection screen** — choose Phone/Tablet or Laptop on launch
+- **Virtual joystick** — left side for movement
+- **Camera swipe zone** — right side drag to aim
+- **Touch buttons** — shoot (crosshair SVG), jump (arrow SVG), reload (circular SVG)
+- **Touch pause button** — top-right corner
+- **Adaptive UI** — menu text, controls hint change based on device
+
+### 🖥️ UI & Flow
+
+- **Device selection** → **Username entry** (danger-themed) → **Menu** → **Game**
 - **Pause menu** with Resume, Restart & Exit options
 - **Game Over screen** with score, kills & time survived
+- **Danger-themed landing page** — hazard stripes, glowing red UI, flickering text
 - **FPS counter**
 - **Fullscreen support** with pointer lock recovery
+
+### 🔒 Security
+
+- **Admin panel** with hash-based authentication
+- **No plaintext passwords** in source code
+- **Session-less auth** — password required on every visit
+
+### ⚙️ Technical
+
+- **Smooth 60 FPS** game loop with delta-time
 - **Responsive** — scales to any screen
 - **Zero dependencies** — pure vanilla JS (ES6 modules) + Three.js via CDN
+- **Vercel ready** — deploy in one command
 
 ---
 
