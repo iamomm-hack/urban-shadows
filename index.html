@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Urban Shadows — A 3D third-person tactical shooter built with Three.js and vanilla JavaScript.">
+    <title>Urban Shadows — 3D Tactical Shooter</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.170.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.170.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+<body>
+
+    <div id="hud">
+        <div id="creator-tag">CREATED BY OM</div>
+        <div id="hud-top-left">
+            <div id="health-bar-bg">
+                <div id="health-bar-fill"></div>
+                <span id="health-text">100 / 100</span>
+            </div>
+            <div id="time-display">0:00</div>
+        </div>
+        <div id="hud-top-center">
+            <div id="reload-text">RELOADING...</div>
+        </div>
+        <div id="hud-top-right">
+            <button id="fullscreen-btn" onclick="this.blur()">⛶</button>
+            <div id="ammo-display">12 / 60</div>
+            <div id="score-display">Score: 0</div>
+        </div>
+        <div id="crosshair">+</div>
+        <div id="fps-counter">60 FPS</div>
+        <div id="damage-flash"></div>
+        <button id="dark-toggle" onclick="this.blur()">☀️ Light</button>
+    </div>
+
+    <div id="menu-screen" class="overlay-screen active">
+        <h1 class="title-glow">URBAN SHADOWS</h1>
+        <p class="subtitle">3D Tactical Shooter</p>
+        <p class="prompt pulse">Click to Start</p>
+        <p class="controls-hint">WASD — Move &nbsp;|&nbsp; Mouse — Aim &nbsp;|&nbsp; Click — Shoot &nbsp;|&nbsp; Space — Jump &nbsp;|&nbsp; R — Reload &nbsp;|&nbsp; ESC — Pause</p>
+    </div>
+
+    <div id="pause-screen" class="overlay-screen">
+        <h1 class="title-glow">PAUSED</h1>
+        <div class="menu-buttons">
+            <button id="resume-btn" class="menu-btn">RESUME</button>
+            <button id="restart-btn" class="menu-btn">RESTART</button>
+        </div>
+    </div>
+
+    <div id="gameover-screen" class="overlay-screen">
+        <h1 class="title-glow red">GAME OVER</h1>
+        <div id="gameover-stats">
+            <p>Score: <span id="final-score">0</span></p>
+            <p>Enemies Killed: <span id="final-kills">0</span></p>
+            <p>Time Survived: <span id="final-time">0:00</span></p>
+        </div>
+        <p class="prompt pulse">Click to Restart</p>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

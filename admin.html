@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel — Urban Shadows</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            width: 100vw; height: 100vh;
+            background: #0a0a0a;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            font-family: 'Inter', sans-serif;
+            color: #ccc;
+            overflow: hidden;
+        }
+        .panel {
+            background: rgba(15, 15, 15, 0.95);
+            border: 1px solid rgba(255, 106, 51, 0.2);
+            border-radius: 8px;
+            padding: 40px 48px;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(255, 106, 51, 0.05);
+            max-width: 400px;
+            width: 90%;
+        }
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 22px;
+            color: #ff6a33;
+            letter-spacing: 4px;
+            margin-bottom: 8px;
+        }
+        .sub {
+            font-size: 12px; color: #444;
+            letter-spacing: 2px;
+            margin-bottom: 28px;
+        }
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 4px;
+            color: #eee;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 2px;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus { border-color: #ff6a33; }
+        input::placeholder { color: #333; letter-spacing: 1px; }
+        button {
+            margin-top: 16px;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #ff6a33, #cc4400);
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        button:hover { opacity: 0.85; }
+        .status {
+            margin-top: 16px;
+            font-size: 12px;
+            min-height: 18px;
+            letter-spacing: 1px;
+        }
+        .status.ok { color: #44ff44; }
+        .status.fail { color: #ff3333; }
+        .status.active { color: #ff6a33; }
+        .back {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #333;
+        }
+        .back a { color: #555; text-decoration: none; }
+        .back a:hover { color: #ff6a33; }
+        .dev-controls {
+            display: none;
+            margin-top: 24px;
+            text-align: left;
+        }
+        .dev-controls.show { display: block; }
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #1a1a1a;
+        }
+        .toggle-row span { font-size: 13px; color: #aaa; }
+        .switch {
+            position: relative;
+            width: 44px; height: 22px;
+            background: #222;
+            border-radius: 11px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .switch.on { background: #ff6a33; }
+        .switch::after {
+            content: '';
+            position: absolute;
+            top: 2px; left: 2px;
+            width: 18px; height: 18px;
+            background: #fff;
+            border-radius: 50%;
+            transition: left 0.2s;
+        }
+        .switch.on::after { left: 24px; }
+    </style>
+</head>
+<body>
+    <div class="panel">
+        <h1>ADMIN PANEL</h1>
+        <p class="sub">DEVELOPER ACCESS</p>
+
+        <div id="login-section">
+            <input type="password" id="key-input" placeholder="enter security key" autofocus>
+            <button id="auth-btn">AUTHENTICATE</button>
+            <p class="status" id="status-msg"></p>
+        </div>
+
+        <div class="dev-controls" id="dev-controls">
+            <div class="toggle-row">
+                <span>developer mode (unlimited ammo + god mode)</span>
+                <div class="switch" id="devmode-toggle"></div>
+            </div>
+            <div class="toggle-row">
+                <span>one shot kill</span>
+                <div class="switch" id="oneshot-toggle"></div>
+            </div>
+            <div class="toggle-row">
+                <span>speed boost (2x)</span>
+                <div class="switch" id="speed-toggle"></div>
+            </div>
+        </div>
+
+        <p class="back"><a href="/">← back to game</a></p>
+    </div>
+
+    <script>
+        function simpleHash(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const ch = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + ch;
+                hash |= 0;
+            }
+            return hash;
+        }
+        const VALID_HASH = simpleHash("om1234");
+
+        const keyInput = document.getElementById('key-input');
+        const authBtn = document.getElementById('auth-btn');
+        const statusMsg = document.getElementById('status-msg');
+        const loginSection = document.getElementById('login-section');
+        const devControls = document.getElementById('dev-controls');
+
+        if (localStorage.getItem('admin_auth') === 'true') {
+            showControls();
+        }
+
+        authBtn.addEventListener('click', tryAuth);
+        keyInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') tryAuth();
+        });
+
+        function tryAuth() {
+            const input = keyInput.value.trim();
+            if (!input) return;
+
+            if (simpleHash(input) === VALID_HASH) {
+                localStorage.setItem('admin_auth', 'true');
+                statusMsg.textContent = 'access granted';
+                statusMsg.className = 'status ok';
+                setTimeout(showControls, 500);
+            } else {
+                statusMsg.textContent = 'wrong key';
+                statusMsg.className = 'status fail';
+                keyInput.value = '';
+            }
+        }
+
+        function showControls() {
+            loginSection.style.display = 'none';
+            devControls.classList.add('show');
+            statusMsg.textContent = 'authenticated';
+            statusMsg.className = 'status active';
+            statusMsg.style.display = 'block';
+
+            setupToggle('devmode-toggle', 'devmode');
+            setupToggle('oneshot-toggle', 'oneshot');
+            setupToggle('speed-toggle', 'speedboost');
+        }
+
+        function setupToggle(elementId, storageKey) {
+            const el = document.getElementById(elementId);
+            const current = localStorage.getItem(storageKey) === 'true';
+            if (current) el.classList.add('on');
+
+            el.addEventListener('click', () => {
+                const isOn = el.classList.toggle('on');
+                localStorage.setItem(storageKey, isOn ? 'true' : 'false');
+            });
+        }
+    </script>
+</body>
+</html>
