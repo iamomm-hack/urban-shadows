@@ -37,12 +37,12 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 0.9;
+renderer.toneMappingExposure = 1.6;
 document.body.prepend(renderer.domElement);
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x0a0a1e);
-scene.fog = new THREE.FogExp2(0x0a0a1e, 0.025);
+scene.background = new THREE.Color(0x87ceeb);
+scene.fog = new THREE.FogExp2(0x87ceeb, 0.008);
 
 const camera = new THREE.PerspectiveCamera(
   60,
@@ -57,9 +57,9 @@ window.addEventListener("resize", () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-scene.add(new THREE.AmbientLight(0x334466, 0.6));
+scene.add(new THREE.AmbientLight(0x334466, 1.0));
 
-const moonLight = new THREE.DirectionalLight(0x8899cc, 1.0);
+const moonLight = new THREE.DirectionalLight(0x8899cc, 2.0);
 moonLight.position.set(15, 25, 10);
 moonLight.castShadow = true;
 moonLight.shadow.mapSize.set(2048, 2048);
@@ -74,7 +74,7 @@ scene.add(moonLight);
 scene.add(new THREE.HemisphereLight(0x223344, 0x111122, 0.3));
 
 const groundGeo = new THREE.PlaneGeometry(ARENA_SIZE, ARENA_SIZE);
-const groundMat = new THREE.MeshLambertMaterial({ color: 0x1a1a2a });
+const groundMat = new THREE.MeshLambertMaterial({ color: 0x556655 });
 const ground = new THREE.Mesh(groundGeo, groundMat);
 ground.rotation.x = -Math.PI / 2;
 ground.receiveShadow = true;
@@ -381,6 +381,12 @@ document.addEventListener("click", (e) => {
   // if clicking a button, let the button handler do it
   if (e.target.tagName === "BUTTON") return;
 
+  // re-acquire pointer lock if lost during gameplay (e.g. after alt-tab)
+  if (state === STATES.PLAYING && !document.pointerLockElement) {
+    input.requestPointerLock(renderer.domElement);
+    return;
+  }
+
   if (state === STATES.MENU) {
     initGame();
     state = STATES.PLAYING;
@@ -414,11 +420,41 @@ restartBtn.addEventListener("click", () => {
   }
 });
 
+const exitBtn = document.getElementById("exit-btn");
+exitBtn.addEventListener("click", () => {
+  if (state === STATES.PAUSED) {
+    state = STATES.MENU;
+    showScreen(menuScreen);
+    setHUDVisible(false);
+  }
+});
+
 fullscreenBtn.addEventListener("click", () => {
   if (!document.fullscreenElement) {
     document.documentElement.requestFullscreen().catch(() => {});
   } else {
     document.exitFullscreen().catch(() => {});
+  }
+});
+
+// Re-acquire pointer lock when returning from minimized/alt-tab
+document.addEventListener("fullscreenchange", () => {
+  if (
+    document.fullscreenElement &&
+    state === STATES.PLAYING &&
+    !document.pointerLockElement
+  ) {
+    renderer.domElement.requestPointerLock();
+  }
+});
+
+document.addEventListener("visibilitychange", () => {
+  if (
+    !document.hidden &&
+    state === STATES.PLAYING &&
+    !document.pointerLockElement
+  ) {
+    renderer.domElement.requestPointerLock();
   }
 });
 
@@ -637,27 +673,3 @@ function tickGameOver(dt) {
   updateParticles(dt);
   renderer.render(scene, camera);
 }
-
-let isDarkMode = true;
-const darkToggle = document.getElementById("dark-toggle");
-
-darkToggle.addEventListener("click", (e) => {
-  e.stopPropagation();
-  isDarkMode = !isDarkMode;
-
-  if (isDarkMode) {
-    scene.background.setHex(0x0a0a1e);
-    scene.fog = new THREE.FogExp2(0x0a0a1e, 0.025);
-    ground.material.color.setHex(0x1a1a2a);
-    moonLight.intensity = 1.0;
-    renderer.toneMappingExposure = 0.9;
-    darkToggle.textContent = "☀️ Light";
-  } else {
-    scene.background.setHex(0x87ceeb);
-    scene.fog = new THREE.FogExp2(0x87ceeb, 0.008);
-    ground.material.color.setHex(0x556655);
-    moonLight.intensity = 2.0;
-    renderer.toneMappingExposure = 1.6;
-    darkToggle.textContent = "🌙 Dark";
-  }
-});
