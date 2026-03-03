@@ -1,22 +1,24 @@
 # Urban Shadows 🔫
 
-A browser-based 2D top-down tactical shooter built with **HTML Canvas** and **vanilla JavaScript** — no frameworks, no dependencies.
+A browser-based **3D third-person tactical shooter** built with **Three.js** and **vanilla JavaScript** — no frameworks, no build tools.
 
 ![Urban Shadows](https://img.shields.io/badge/status-production--ready-brightgreen)
 
 ---
 
+## UI
+
 ## 🎮 Game Controls
 
-| Action  | Input              |
-| ------- | ------------------ |
-| Move    | `W` `A` `S` `D`    |
-| Aim     | Mouse              |
-| Shoot   | Left-click         |
-| Reload  | `R`                |
-| Pause   | `ESC`              |
-| Start   | `SPACE`            |
-| Restart | `R` (on game-over) |
+| Action     | Input             |
+| ---------- | ----------------- |
+| Move       | `W` `A` `S` `D`   |
+| Aim        | Mouse             |
+| Shoot      | Left-click        |
+| Jump       | `Space`           |
+| Reload     | `R`               |
+| Pause      | `ESC`             |
+| Fullscreen | Fullscreen button |
 
 ---
 
@@ -66,38 +68,43 @@ npx -y serve .
 
 ```
 urban-shadows/
-├── index.html          # Canvas + module entry point
-├── styles.css          # Page styling & responsive canvas
+├── index.html          # Game entry point + HUD overlay
+├── styles.css          # UI styling, overlays & animations
 ├── vercel.json         # Vercel deployment config
+├── .env                # Environment variables
 ├── README.md
 └── js/
-    ├── main.js         # Game loop, state machine, HUD, particles
-    ├── Player.js       # Player class (movement, shooting, health)
-    ├── Enemy.js        # Enemy class (patrol/chase AI)
+    ├── main.js         # Game loop, state machine, HUD, camera, particles
+    ├── Player.js       # Player class (movement, shooting, health, jumping)
+    ├── Enemy.js        # Enemy class (patrol/chase AI, respawn)
     ├── Bullet.js       # Bullet class + object pool
-    ├── InputHandler.js # Keyboard & mouse tracking
-    └── utils.js        # Collision, distance, angle helpers
+    ├── InputHandler.js # Keyboard, mouse & pointer lock management
+    └── utils.js        # Collision, spawn, angle helpers
 ```
 
 ---
 
 ## ✨ Features
 
+- **3D third-person camera** with smooth orbit and pitch control
+- **Three.js rendering** with shadows, fog, and tone mapping
+- **Light mode** environment — sky blue atmosphere with green terrain
+- **Username entry screen** — danger-themed landing page on launch
 - **Smooth 60 FPS** game loop with delta-time
-- **8-directional movement** with normalised diagonals
-- **Mouse aiming** — player triangle rotates toward cursor
-- **Magazine + reserve ammo** system with 2-second reload
+- **WASD movement** with normalised diagonals
+- **Mouse aiming** via Pointer Lock API — auto re-locks after alt-tab
+- **Magazine + reserve ammo** system with reload
 - **Patrol / Chase AI** with hysteresis to prevent flickering
-- **Object-pooled bullets** (max 50) — zero GC pressure
+- **Object-pooled bullets** — zero GC pressure
 - **Particle effects** on hit and kill
-- **Muzzle flash** on each shot
+- **Building collision** for player and enemies
 - **Health bar** with colour gradient (green → yellow → red)
-- **Game states**: Menu → Playing ↔ Paused → Game Over
-- **Score & stats** (kills, time survived)
+- **Pause menu** with Resume, Restart & Exit options
+- **Game Over screen** with score, kills & time survived
 - **FPS counter**
-- **Sound-effect hooks** (commented code, ready to wire up)
-- **Responsive canvas** — scales to any screen
-- **Zero dependencies** — pure vanilla JS (ES6+)
+- **Fullscreen support** with pointer lock recovery
+- **Responsive** — scales to any screen
+- **Zero dependencies** — pure vanilla JS (ES6 modules) + Three.js via CDN
 
 ---
 
